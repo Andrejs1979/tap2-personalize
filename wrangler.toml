@@ -1,0 +1,74 @@
+# Cloudflare Workers Configuration
+# Tap2 Personalize API
+
+name = "tap2-personalize-api"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Environment variables
+[vars]
+ENVIRONMENT = "production"
+API_VERSION = "v1"
+
+# D1 Database Binding
+[[d1_databases]]
+binding = "DB"
+database_name = "tap2-personalize-prod"
+database_id = "" # TODO: Set after creating D1 database
+
+# KV Namespace for caching
+[[kv_namespaces]]
+binding = "CACHE"
+id = "" # TODO: Set after creating KV namespace
+preview_id = "" # TODO: Set after creating preview KV namespace
+
+# Queue for feedback processing
+[[queues.producers]]
+binding = "FEEDBACK_QUEUE"
+queue = "feedback-events-prod"
+
+# Rate limiting
+[limits]
+cpu_ms = 50
+
+# Build configuration
+[build]
+command = "npm run build"
+
+# Staging environment
+[env.staging]
+name = "tap2-personalize-api-staging"
+vars = { ENVIRONMENT = "staging", API_VERSION = "v1" }
+
+[[env.staging.d1_databases]]
+binding = "DB"
+database_name = "tap2-personalize-staging"
+database_id = "" # TODO: Set after creating D1 database
+
+[[env.staging.kv_namespaces]]
+binding = "CACHE"
+id = "" # TODO: Set after creating KV namespace
+
+[[env.staging.queues.producers]]
+binding = "FEEDBACK_QUEUE"
+queue = "feedback-events-staging"
+
+# Development environment
+[env.dev]
+name = "tap2-personalize-api-dev"
+vars = { ENVIRONMENT = "development", API_VERSION = "v1" }
+
+[[env.dev.d1_databases]]
+binding = "DB"
+database_name = "tap2-personalize-dev"
+database_id = "" # TODO: Set after creating D1 database
+
+[[env.dev.kv_namespaces]]
+binding = "CACHE"
+id = "" # TODO: Set after creating KV namespace
+
+# Routes (for production custom domain)
+# routes = [
+#   { pattern = "https://api.tap2-personalize.com/*", zone_name = "tap2-personalize.com" }
+# ]
